@@ -1,3 +1,6 @@
+#ifndef X86_H
+#define X86_H
+
 #include "types.h"
 
 static inline void outb(uint16_t port, uint8_t value) {
@@ -29,3 +32,5 @@ static inline uint32_t inl(uint16_t port) {
     asm volatile ("inl %1, %0" : "=a"(value) : "Nd"(port));
     return value;
 }
+
+#endif

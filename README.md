@@ -6,21 +6,9 @@ The follwing tools are necessary for running the OS:
 - qemu
 
 ## To run the OS:
-### 1. Make a drive folder and create a disk image using qemu-img
+Simply run:
 ```
-mkdir drive && cd drive
-qemu-img create disk.img 1M
-```
-### 2. Write zeros to disk image
-For some reason qemu doesn't acquire space even if you specify the disk size. So do it manually.
-```
-dd if=/dev/zero of=disk.img bs=512 count=100
-```
-### 3. Compile and boot
-```
-cd ..
-make bootloader
-make kernel
+make
 make boot
 ```
 If you're in terminal environment without GUI, you can use `boot-nogui` target
