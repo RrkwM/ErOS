@@ -18,7 +18,12 @@ dd if=/dev/zero of=disk.img bs=512 count=100
 ```
 ### 3. Compile and boot
 ```
+cd ..
 make bootloader
 make kernel
 make boot
+```
+If you're in terminal environment without GUI, you can use `boot-nogui` target
+```
+make boot-nogui
 ```
