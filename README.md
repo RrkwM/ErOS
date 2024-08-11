@@ -14,7 +14,7 @@ qemu-img create disk.img 1M
 ### 2. Write zeros to disk image
 For some reason qemu doesn't acquire space even if you specify the disk size. So do it manually.
 ```
-dd if=/dev/zeros of=disk.img bs=512 count=100
+dd if=/dev/zero of=disk.img bs=512 count=100
 ```
 ### 3. Compile and boot
 ```
