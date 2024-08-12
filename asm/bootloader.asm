@@ -2,7 +2,7 @@
 
 [org 0x7c00]
 
-KERNEL_OFFSET equ 0x1000       ; Memory offset to load our kernel
+KERNEL_OFFSET equ 0x1000     ; Memory offset to load our kernel
 
 mov [BOOT_DRIVE], dl           ; Store the boot drive number in BOOT_DRIVE
 mov bp, 0x9000                 ; Set up the stack

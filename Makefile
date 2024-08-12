@@ -37,10 +37,10 @@ $(BUILD_DIR)/%.o: $(C_SRC_DIR)/%.c
 	gcc -I$(INCLUDE_DIR) -m32 -fno-pic -ffreestanding -c $< -o $@
 
 boot:
-	qemu-system-i386 -drive file=$(DRIVE_DIR)/disk.img,format=raw
+	qemu-system-i386 -m 64M -drive file=$(DRIVE_DIR)/disk.img,format=raw
 
 boot-nogui:
-	qemu-system-i386 -drive file=$(DRIVE_DIR)/disk.img,format=raw -vnc :1
+	qemu-system-i386 -m 64M -drive file=$(DRIVE_DIR)/disk.img,format=raw -vnc :1
 
 clean:
 	rm -rf $(BUILD_DIR) $(DRIVE_DIR)
