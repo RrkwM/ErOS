@@ -34,13 +34,16 @@ $(BUILD_DIR)/kernel.bin: $(OBJ_FILES) $(ASM_SRC_DIR)/kernel_entry.asm
 	ld -m elf_i386 -o $(BUILD_DIR)/kernel.bin -Ttext 0x1000 $(OBJ_FILES) --oformat binary
 
 $(BUILD_DIR)/%.o: $(C_SRC_DIR)/%.c
-	gcc -I$(INCLUDE_DIR) -m32 -fno-pic -ffreestanding -c $< -o $@
+	gcc -O0 -I$(INCLUDE_DIR) -m32 -fno-pic -ffreestanding -c $< -o $@
 
 boot:
-	qemu-system-i386 -m 64M -drive file=$(DRIVE_DIR)/disk.img,format=raw
+	qemu-system-i386 -m 16M -drive file=$(DRIVE_DIR)/disk.img,format=raw
 
 boot-nogui:
-	qemu-system-i386 -m 64M -drive file=$(DRIVE_DIR)/disk.img,format=raw -vnc :1
+	qemu-system-i386 -m 16M -drive file=$(DRIVE_DIR)/disk.img,format=raw -vnc :1
+
+debug:
+	qemu-system-i386 -m 16M -drive file=$(DRIVE_DIR)/disk.img,format=raw -vnc :1 -d int -no-shutdown -no-reboot -S -monitor stdio
 
 clean:
 	rm -rf $(BUILD_DIR) $(DRIVE_DIR)

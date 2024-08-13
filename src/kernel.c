@@ -5,10 +5,10 @@
 #include "memory.h"
 
 void main(){
-    char hello[] = "hello my kernel";
     vga_set_mode(VGA_MODE_TEXT);
     vga_clear_screen();
-    kprint(hello);
+    kprint("hello my kernel");
     kinit_paging();
     kenable_paging();
+    kprint("hello paging");
 }
