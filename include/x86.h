@@ -48,4 +48,9 @@ static inline void memset(void *address, uint8_t value, size_t size) {
     }
 }
 
+//You can do an IO operation on any unused port: the Linux kernel by default uses port 0x80
+static inline void io_wait(void){
+    outb(0x80, 0);
+}
+
 #endif

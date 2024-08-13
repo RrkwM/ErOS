@@ -3,6 +3,7 @@
 #include "x86.h"
 
 void kinit_paging() {
+    disable_interrupts();
     //allocate addr for page directory and page table
     page_directory *kernel_pd = (page_directory *)KERNEL_PAGE_DIRECTORY_ADDR;
     
@@ -32,11 +33,10 @@ void kinit_paging() {
         kernel_pd->pde[j].page_size = 0;
         kernel_pd->pde[j].accessed = 0;
     }
-    kprint("Initialization Succeeded!");
+    enable_interrupts();
 }
 
 void kenable_paging(){
-    kprint("Enabling paging...");
     disable_interrupts();
     uint32_t kernel_pd_addr = KERNEL_PAGE_DIRECTORY_ADDR; // physical address for page directory;
 
@@ -48,5 +48,4 @@ void kenable_paging(){
     cr0 |= 0x80000000;
     asm volatile ("mov %0, %%cr0" : : "r"(cr0));
     enable_interrupts();
-    kprint("Paging turned on!");
 }

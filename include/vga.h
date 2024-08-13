@@ -1,3 +1,6 @@
+#ifndef VGA_H
+#define VGA_H
+
 #include "types.h"
 #include "x86.h"
 
@@ -49,3 +52,5 @@ typedef enum {
 void vga_set_mode(vga_mode_t);
 void vga_write_mem(char*, vga_attr);
 void vga_clear_screen();
+
+#endif

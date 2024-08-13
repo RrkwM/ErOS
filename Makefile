@@ -31,7 +31,7 @@ kernel: $(BUILD_DIR)/kernel.bin
 
 $(BUILD_DIR)/kernel.bin: $(OBJ_FILES) $(ASM_SRC_DIR)/kernel_entry.asm
 	nasm -f elf -o $(BUILD_DIR)/kernel_entry.o $(ASM_SRC_DIR)/kernel_entry.asm
-	ld -m elf_i386 -o $(BUILD_DIR)/kernel.bin -Ttext 0x1000 $(OBJ_FILES) --oformat binary
+	ld -m elf_i386 -o $(BUILD_DIR)/kernel.bin -Ttext 0x1000 $(BUILD_DIR)/kernel_entry.o $(OBJ_FILES) --oformat binary
 
 $(BUILD_DIR)/%.o: $(C_SRC_DIR)/%.c
 	gcc -O0 -I$(INCLUDE_DIR) -m32 -fno-pic -ffreestanding -c $< -o $@

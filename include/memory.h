@@ -1,11 +1,14 @@
+#ifndef MEMORY_H
+#define MEMORY_H
+
 #include "types.h"
 
 //Necessary definitions for paging
 #define PAGE_SIZE 4096 // 4 KiB
 //According to Intel, a pt/pd is a page itself. So maximum 4096/4 = 1024.
 #define MAX_ENTRIES 1024
-#define KERNEL_PAGE_DIRECTORY_ADDR 0x00200000 //where page directory starts. Suppose we have 64M memory.
-#define KERNEL_PAGE_TABLE_ADDR 0x00201000 //where page table starts
+#define KERNEL_PAGE_DIRECTORY_ADDR 0x00C00000 //where page directory starts. Suppose we have 16M memory.
+#define KERNEL_PAGE_TABLE_ADDR 0x00C01000 //where page table starts
 
 typedef struct  __attribute__((packed)) {
     unsigned int present : 1;         // present bit    
@@ -41,4 +44,5 @@ typedef struct __attribute__((packed)){
 
 void kinit_paging();
 void kenable_paging();
-void page_frame_allocate();
+
+#endif
