@@ -13,7 +13,7 @@ void main(){
     kenable_paging();
     kprint("Paging Enabled.");
     kinit_interrupt();
-    kprint("Looping....");
+    kprint("                         ...halt");
     for(;;){
         __asm__ volatile ("hlt\n\t"); 
     }

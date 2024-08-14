@@ -17,11 +17,11 @@ call switch_to_pm              ; Switch to protected mode
 jmp $                          ; Infinite loop (halt)
 
 ; Include our useful routines
-%include "asm/print_string.asm"
-%include "asm/disk_load.asm"
-%include "asm/gdt.asm"
-%include "asm/print_string_pm.asm"
-%include "asm/switch_to_pm.asm"
+%include "asm_boot/print_string.asm"
+%include "asm_boot/disk_load.asm"
+%include "asm_boot/gdt.asm"
+%include "asm_boot/print_string_pm.asm"
+%include "asm_boot/switch_to_pm.asm"
 
 [bits 16]
 

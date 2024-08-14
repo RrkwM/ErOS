@@ -90,27 +90,9 @@ void pic_remap(int, int);
 uint16_t pic_get_irr(void);
 uint16_t pic_get_isr(void);
 
-isr_t default_handler();
+isr_t interrupt_handler(uint32_t, uint32_t);
+
+extern isr_t interrupt_handler_33();
 isr_t keyboard_handler();
-
-// static void mask_all_interrupts() {
-//     // Mask all interrupts on both PICs
-//     pic_set_mask(0xFF); // Master PIC: Mask all IRQs (0-7)
-//     pic_set_mask(0xFF); // Slave PIC: Mask all IRQs (8-15)
-// }
-// static void unmask_keyboard_interrupt() {
-//     uint8_t master_mask, slave_mask;
-
-//     // Read the current masks
-//     master_mask = inb(MASTER_PIC_DATA);
-//     slave_mask = inb(SLAVE_PIC_DATA);
-
-//     // Modify the masks to unmask IRQ 1
-//     master_mask &= ~(1 << 1); // Clear bit 1 to unmask IRQ 1 on the master PIC
-
-//     // Write the updated masks back to the PICs
-//     outb(MASTER_PIC_DATA, master_mask);
-//     outb(SLAVE_PIC_DATA, slave_mask);
-// }
 
 #endif

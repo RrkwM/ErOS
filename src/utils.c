@@ -1,3 +1,4 @@
+#include "types.h"
 #include "utils.h"
 #include "vga.h"
 
