@@ -44,7 +44,7 @@
 
 #define IDT_ADDR 0x00F00000 //Last 1M space
 #define IDT_SIZE 256    //Total length of IDT
-#define IDT_LIMIT (IDT_SIZE * 8 - 1) // A single IDT entry is 64bit.
+#define IDT_LIMIT 0xFFFF // A single IDT entry is 64bit.
 
 // Interrupt service routine pointer
 typedef void (*isr_t)(void);
@@ -79,7 +79,7 @@ void kinit_interrupt();
 void idt_set_entry(int, uint32_t, uint16_t, interrupt_gate_type, uint8_t);
 void isr_install_handler(int, isr_t);
 void isr_uninstall_handler(int);
-void load_idt(idt_desc);
+void load_idt(idt_desc *);
 
 //internal utils
 void pic_init();
@@ -92,4 +92,25 @@ uint16_t pic_get_isr(void);
 
 isr_t default_handler();
 isr_t keyboard_handler();
+
+// static void mask_all_interrupts() {
+//     // Mask all interrupts on both PICs
+//     pic_set_mask(0xFF); // Master PIC: Mask all IRQs (0-7)
+//     pic_set_mask(0xFF); // Slave PIC: Mask all IRQs (8-15)
+// }
+// static void unmask_keyboard_interrupt() {
+//     uint8_t master_mask, slave_mask;
+
+//     // Read the current masks
+//     master_mask = inb(MASTER_PIC_DATA);
+//     slave_mask = inb(SLAVE_PIC_DATA);
+
+//     // Modify the masks to unmask IRQ 1
+//     master_mask &= ~(1 << 1); // Clear bit 1 to unmask IRQ 1 on the master PIC
+
+//     // Write the updated masks back to the PICs
+//     outb(MASTER_PIC_DATA, master_mask);
+//     outb(SLAVE_PIC_DATA, slave_mask);
+// }
+
 #endif

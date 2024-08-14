@@ -11,10 +11,8 @@ void kinit_interrupt(){
         // using default ISR，selector 0x08（code seg selector），32-bit interrupt gate (0xE)
         idt_set_entry(i, (uint32_t)default_handler, 0x08, INTERRUPT_GATE_32, 0);
     }
-
-    // idt_set_entry(33, (uint32_t)keyboard_handler, 0x08, INTERRUPT_GATE_32, 0);
-
-    load_idt(idtr);
+    idt_set_entry(33, (uint32_t)keyboard_handler, 0x08, INTERRUPT_GATE_32, 0);
+    load_idt(&idtr);
     pic_init();
     enable_interrupts();
 }
@@ -39,13 +37,17 @@ void isr_install_handler(int isr_num, isr_t handler){
 void isr_uninstall_handler(int isr_num){
 
 }
-void load_idt(idt_desc idtr){
-    idtr.limit = IDT_LIMIT;
-    idtr.base = IDT_ADDR;
-    asm volatile ("lidt %0" : : "m" (idtr));
+void load_idt(idt_desc *idtr){
+    idtr->limit = 65535;
+    idtr->base = (uint32_t)IDT_ADDR;
+    asm volatile ("lidt %0" : : "m" (*idtr));
 }
 
 void pic_init(void) {
+    // Mask all interrupts on both PICs
+    outb(MASTER_PIC_DATA, 0xFF);
+    outb(SLAVE_PIC_DATA, 0xFF);
+
     disable_interrupts();
     // Initialize the Master PIC
     outb(MASTER_PIC_COMMAND, ICW1_INIT | ICW1_ICW4);   // Send initialization command
@@ -59,6 +61,12 @@ void pic_init(void) {
     outb(SLAVE_PIC_DATA, SLAVE_PIC_ICW3);   // Configure the Slave PIC cascade identity (connected to Master PIC IRQ2)
     outb(SLAVE_PIC_DATA, ICW4_8086);   // Set the Slave PIC to 8086 mode
     enable_interrupts();
+
+    // Unmask interrupts after initialization
+    // Unmask only the required IRQs
+    // Example: Unmask IRQ 1 (keyboard) and mask others
+    outb(MASTER_PIC_DATA, 0xFD); // Unmask IRQ 1 (keyboard)
+    outb(SLAVE_PIC_DATA, 0xFF);  // Mask all IRQs on Slave PIC
 }
 
 void pic_send_eoi(uint8_t irq_num){
@@ -150,23 +158,32 @@ uint16_t pic_get_isr(void)
 //Interrupt serive routine
 
 isr_t default_handler(){
-    kprint("defaulting...");
+    kprint("DEBUG");
+    // signals 
+    pic_send_eoi(0);
 }
 
 #define KEYBOARD_DATA_PORT 0x60
-isr_t keyboard_handler(){
-     // read scan code from 0x60
-    uint8_t scan_code = inb(KEYBOARD_DATA_PORT);
+#define KEYBOARD_STATUS_PORT 0x64
+#define KEYBOARD_STATUS_BUFFER_EMPTY 0x01
+isr_t keyboard_handler() {
+    uint8_t scan_code;
 
-    // convert
-    char str[3];
-    str[0] = "0123456789ABCDEF"[(scan_code >> 4) & 0x0F];
-    str[1] = "0123456789ABCDEF"[scan_code & 0x0F];
-    str[2] = '\0';
+    // process all scan code 
+    while ((inb(0x64) & 0x01)) { // check cache
+        scan_code = inb(KEYBOARD_DATA_PORT); // read from data port
 
-    // print
-    kprint(str);
+        // convert
+        char str[3];
+        str[0] = "0123456789ABCDEF"[(scan_code >> 4) & 0x0F];
+        str[1] = "0123456789ABCDEF"[scan_code & 0x0F];
+        str[2] = '\0';
 
-    // signals 
+        // print
+        kprint("    ");
+        kprint(str);
+    }
+
+    // signal
     pic_send_eoi(1);
 }
