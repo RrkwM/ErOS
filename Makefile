@@ -31,24 +31,23 @@ bootloader: $(BUILD_DIR)/bootloader.bin
 $(BUILD_DIR)/bootloader.bin: $(ASM_BOOT_SRC_DIR)/bootloader.asm
 	nasm -f bin -o $(BUILD_DIR)/bootloader.bin $(ASM_BOOT_SRC_DIR)/bootloader.asm
 
-# 生成带有调试信息的 ELF 文件，并使用 objcopy 生成 raw binary
-
-# 目标：生成最终的内核二进制文件，并写入磁盘映像
+#rules for making kernel, from src and asm
 kernel: $(BUILD_DIR)/kernel.bin
 	dd if=$(BUILD_DIR)/kernel.bin of=$(DRIVE_DIR)/disk.img bs=512 seek=1 conv=notrunc
 
-# 链接生成 ELF 文件，并生成 raw binary 文件
-$(BUILD_DIR)/kernel.elf: $(OBJ_FILES) $(BUILD_DIR)/kernel_entry_asm.o
-	ld -m elf_i386 -o $(BUILD_DIR)/kernel.elf -Ttext 0x1000 $(BUILD_DIR)/kernel_entry_asm.o $(OBJ_FILES)
+# link into elf and obj copy to raw binary
 
 $(BUILD_DIR)/kernel.bin: $(BUILD_DIR)/kernel.elf
 	objcopy -O binary $(BUILD_DIR)/kernel.elf $(BUILD_DIR)/kernel.bin
 
-# 编译汇编文件
+$(BUILD_DIR)/kernel.elf: $(OBJ_FILES) $(BUILD_DIR)/kernel_entry_asm.o
+	ld -m elf_i386 -o $(BUILD_DIR)/kernel.elf -Ttext 0x1000 $(BUILD_DIR)/kernel_entry_asm.o $(OBJ_FILES)
+
+# compile assembly source with debug info
 $(BUILD_DIR)/%_asm.o: $(ASM_SRC_DIR)/%.asm
 	nasm -f elf -g -F dwarf -o $@ $<
 
-# 编译C文件，生成带有调试信息的目标文件
+# compile C source with debug info
 $(BUILD_DIR)/%.o: $(C_SRC_DIR)/%.c
 	gcc -g -O0 -I$(INCLUDE_DIR) -m32 -fno-pic -ffreestanding -c $< -o $@
 

@@ -45,4 +45,16 @@ typedef struct __attribute__((packed)){
 void kinit_paging();
 void kenable_paging();
 
+//assuming 4 KiB page size
+struct physical_page {
+    void *start_addr;
+    struct physical_page *next;
+};
+//keep tracking of physical memory page
+void page_frame_allocator();
+//map physical memory into virtual memory, i.e. virtual memory manager
+void mem_map();
+//allocate virtual memory
+void mem_alloc();
+void page_table_creator();
 #endif
