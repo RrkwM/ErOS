@@ -33,4 +33,24 @@ static inline uint32_t inl(uint16_t port) {
     return value;
 }
 
+static inline void disable_interrupts() {
+    __asm__ __volatile__ ("cli" ::: "memory");
+}
+
+static inline void enable_interrupts() {
+    __asm__ __volatile__ ("sti" ::: "memory");
+}
+
+static inline void memset(void *address, uint8_t value, size_t size) {
+    uint8_t *ptr = (uint8_t *)address;
+    for (size_t i = 0; i < size; i++) {
+        ptr[i] = value; 
+    }
+}
+
+//You can do an IO operation on any unused port: the Linux kernel by default uses port 0x80
+static inline void io_wait(void){
+    outb(0x80, 0);
+}
+
 #endif
